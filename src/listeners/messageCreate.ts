@@ -1,4 +1,11 @@
-import { APIEmbed, AttachmentBuilder, JSONEncodable, MessageCreateOptions, type Message } from "discord.js";
+import {
+  APIEmbed,
+  AttachmentBuilder,
+  JSONEncodable,
+  MessageCreateOptions,
+  MessageType,
+  type Message
+} from "discord.js";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Listener } from "@sapphire/framework";
 import path from "node:path";
@@ -22,31 +29,33 @@ function buildEmbeds(message: Message): (JSONEncodable<APIEmbed> | APIEmbed)[] {
         name: message.author.username,
         icon_url: message.author.avatarURL({ size: 4096 }) ?? message.author.defaultAvatarURL
       },
-      description: message.content ?? "(No content)",
+      description: message.content || "(No content)",
       color: 5793266,
-      timestamp: new Date().toISOString()
+      timestamp: message.createdAt.toISOString()
     },
     ...message.embeds
   ].filter((x) => x !== undefined);
 }
 
-function buildMessageOptions(message: Message): MessageCreateOptions {
+function buildMessageOptions(message: Message, withComponent: boolean = true): MessageCreateOptions {
   return {
     files: buildFiles(message),
     embeds: buildEmbeds(message),
-    components: [
-      {
-        type: 1,
-        components: [
+    components: withComponent
+      ? [
           {
-            type: 2,
-            customId: `reply_${message.author.id}_${message.id}`,
-            label: "Reply",
-            style: 1
+            type: 1,
+            components: [
+              {
+                type: 2,
+                customId: `reply_${message.author.id}_${message.id}`,
+                label: "Reply",
+                style: 1
+              }
+            ]
           }
         ]
-      }
-    ]
+      : undefined
   };
 }
 
@@ -56,14 +65,15 @@ function buildMessageOptions(message: Message): MessageCreateOptions {
 export class MessageCreateEvent extends Listener {
   public async run(message: Message) {
     if (message.author.id === this.container.client.id) return;
-    if (message.type !== 0) return;
-
+    if (message.type !== MessageType.Default && message.type !== MessageType.Reply) return;
     if (message.channel.isDMBased()) {
       let replyMessage;
 
       if (message.reference) {
         const referenceMessage = await message.fetchReference();
-        replyMessage = await this.container.utilities.guild.dmLogChannel?.send(buildMessageOptions(referenceMessage));
+        replyMessage = await this.container.utilities.guild.dmLogChannel?.send(
+          buildMessageOptions(referenceMessage, false)
+        );
       }
 
       const msg = buildMessageOptions(message);
