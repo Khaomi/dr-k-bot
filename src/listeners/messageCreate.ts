@@ -1,4 +1,4 @@
-import { AttachmentBuilder, type Message } from "discord.js";
+import { APIEmbed, AttachmentBuilder, JSONEncodable, MessageCreateOptions, type Message } from "discord.js";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Listener } from "@sapphire/framework";
 import path from "node:path";
@@ -6,51 +6,75 @@ import fs from "node:fs";
 
 const insultList = JSON.parse(fs.readFileSync(path.join(__dirname, "../../insult.json"), "utf8")) as string[];
 
+function buildFiles(message: Message) {
+  return Array.from(message.attachments.values()).map((attachment) =>
+    new AttachmentBuilder((attachment as any).attachment, {
+      name: attachment.name ?? undefined,
+      description: attachment.description ?? ""
+    }).setSpoiler(attachment.spoiler)
+  );
+}
+
+function buildEmbeds(message: Message): (JSONEncodable<APIEmbed> | APIEmbed)[] {
+  return [
+    message.content
+      ? {
+          author: {
+            name: message.author.username,
+            icon_url: message.author.avatarURL({ size: 4096 }) ?? message.author.defaultAvatarURL
+          },
+          description: message.content,
+          color: 5793266,
+          timestamp: new Date().toISOString()
+        }
+      : undefined,
+    ...message.embeds
+  ].filter((x) => x !== undefined);
+}
+
+function buildMessageOptions(message: Message): MessageCreateOptions {
+  return {
+    files: buildFiles(message),
+    embeds: buildEmbeds(message),
+    components: [
+      {
+        type: 1,
+        components: [
+          {
+            type: 2,
+            customId: `reply_${message.author.id}_${message.id}`,
+            label: "Reply",
+            style: 1
+          }
+        ]
+      }
+    ]
+  };
+}
+
 @ApplyOptions<Listener.Options>({
   event: "messageCreate"
 })
 export class MessageCreateEvent extends Listener {
   public async run(message: Message) {
     if (message.author.id === this.container.client.id) return;
-    if (message.type != 0) return;
+    if (message.type !== 0) return;
+
     if (message.channel.isDMBased()) {
-      this.container.utilities.guild.dmLogChannel?.send({
-        files: Array.from(message.attachments.values()).map((attachment) =>
-          new AttachmentBuilder((attachment as any).attachment, {
-            name: attachment.name ?? undefined,
-            description: attachment.description ?? ""
-          }).setSpoiler(attachment.spoiler)
-        ),
-        embeds: [
-          {
-            author: {
-              name: message.author.username,
-              icon_url:
-                message.author.avatarURL({
-                  size: 4096
-                }) ?? message.author.defaultAvatarURL
-            },
-            description: message.content || "(No content)",
-            color: 5793266,
-            timestamp: new Date().toISOString()
-          }
-        ],
-        components: [
-          {
-            type: 1,
-            components: [
-              {
-                type: 2,
-                customId: `reply_${message.author.id}_${message.id}`,
-                label: "Reply",
-                style: 1
-              }
-            ]
-          }
-        ]
-      });
+      let replyMessage;
+
+      if (message.reference) {
+        const referenceMessage = await message.fetchReference();
+        replyMessage = await this.container.utilities.guild.dmLogChannel?.send(buildMessageOptions(referenceMessage));
+      }
+
+      const msg = buildMessageOptions(message);
+
+      if (replyMessage) replyMessage.reply(msg);
+      else this.container.utilities.guild.dmLogChannel?.send(msg);
     } else {
       const splitText = message.content.split(" ");
+
       if (
         message.mentions.users.size === 1 &&
         splitText.length === 1 &&
