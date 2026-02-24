@@ -96,6 +96,8 @@ export class CommandHandler extends Subcommand {
               .toJSON()
           ]
         });
+      } else {
+        this.container.logger.error(e);
       }
     }
   }
@@ -145,6 +147,8 @@ export class CommandHandler extends Subcommand {
               .toJSON()
           ]
         });
+      } else {
+        this.container.logger.error(e);
       }
     }
   }
@@ -193,6 +197,8 @@ export class CommandHandler extends Subcommand {
               .toJSON()
           ]
         });
+      } else {
+        this.container.logger.error(e);
       }
     }
   }

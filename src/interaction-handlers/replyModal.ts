@@ -7,7 +7,14 @@ import { ApplyOptions } from "@sapphire/decorators";
 })
 export class Handler extends InteractionHandler {
   public async run(interaction: ModalSubmitInteraction) {
-    if (!interaction.inCachedGuild() || !this.container.utilities.guild.isIntern(interaction.member)) return;
+    if (
+      !interaction.inCachedGuild() ||
+      (!this.container.utilities.guild.isHeadSecurity(interaction.member) &&
+        !this.container.utilities.guild.isSeniorSecurity(interaction.member) &&
+        !this.container.utilities.guild.isSecurity(interaction.member) &&
+        !this.container.utilities.guild.isIntern(interaction.member))
+    )
+      return;
 
     await interaction.deferReply({
       flags: MessageFlags.Ephemeral
@@ -40,7 +47,7 @@ export class Handler extends InteractionHandler {
         .then(() => interaction.editReply("Reply sent!"))
         .catch((err) => {
           interaction.editReply("Unable to send message!");
-          console.error(err);
+          this.container.logger.error(err);
         });
     else
       user
@@ -51,7 +58,7 @@ export class Handler extends InteractionHandler {
         .then(() => interaction.editReply("Reply sent!"))
         .catch((err) => {
           interaction.editReply("Unable to send message");
-          console.error(err);
+          this.container.logger.error(err);
         });
 
     if (interaction.message && interaction.message.embeds.length > 0)
@@ -71,33 +78,33 @@ export class Handler extends InteractionHandler {
       });
 
     try {
-      await interaction.message
-        ?.reply({
-          files: Array.from(optionalFile?.values() ?? []),
-          embeds: [
-            {
-              author: {
-                name: interaction.user.username,
-                icon_url:
-                  interaction.user.avatarURL({
-                    size: 4096
-                  }) ?? interaction.user.defaultAvatarURL
-              },
-              description: messageContent || "(No content)",
-              footer: {
-                text: `Replied to ${user.username}`,
-                icon_url:
-                  user.avatarURL({
-                    size: 4096
-                  }) ?? user.defaultAvatarURL
-              },
-              color: 5793266,
-              timestamp: new Date().toISOString()
-            }
-          ]
-        })
-        .catch(() => undefined);
-    } catch (_) {}
+      await interaction.message?.reply({
+        files: Array.from(optionalFile?.values() ?? []),
+        embeds: [
+          {
+            author: {
+              name: interaction.user.username,
+              icon_url:
+                interaction.user.avatarURL({
+                  size: 4096
+                }) ?? interaction.user.defaultAvatarURL
+            },
+            description: messageContent || "(No content)",
+            footer: {
+              text: `Replied to ${user.username}`,
+              icon_url:
+                user.avatarURL({
+                  size: 4096
+                }) ?? user.defaultAvatarURL
+            },
+            color: 5793266,
+            timestamp: new Date().toISOString()
+          }
+        ]
+      });
+    } catch (e) {
+      this.container.logger.error(e);
+    }
   }
 
   public parse(interaction: ModalSubmitInteraction) {
