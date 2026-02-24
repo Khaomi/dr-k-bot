@@ -35,8 +35,8 @@ export default config as {
   toggleRole: {
     [key: string]: string;
   };
-  questions: TextInputComponentData[];
-  appealQuestions: TextInputComponentData[];
+  questions: Omit<TextInputComponentData, "customId" | "type">[];
+  appealQuestions: Omit<TextInputComponentData, "customId" | "type">[];
   misc: {
     mediaCooldown: number;
     mediaLimit: number;

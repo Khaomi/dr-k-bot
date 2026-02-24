@@ -6,9 +6,6 @@ import config from "../config";
 const memberOption = (option: any, description = "-") =>
   option.setName("member").setDescription(description).setRequired(true);
 
-// TODO: convert exception message into a function
-// TODO: convert success message into function
-
 @ApplyOptions<Subcommand.Options>({
   description: "Send a message in the member's dm",
   preconditions: ["ChangedGuildOnly", ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly"]],
@@ -54,103 +51,25 @@ export class CommandHandler extends Subcommand {
   }
 
   public async chatInputNsfw(interaction: Subcommand.ChatInputCommandInteraction) {
-    await interaction.deferReply();
-
     const member = interaction.options.getMember("member")! as GuildMember;
-
-    try {
-      await member.user.send({
-        embeds: [
-          this.container.utilities.embed
-            .ERROR_COLOR(
-              new EmbedBuilder({
-                description: `${interaction.user} has deemed your pfp or banner to be against our NSFW policy, you have 10 minutes to change it or to contact ${interaction.user} to resolve the issue.`
-              })
-            )
-            .toJSON()
-        ]
-      });
-
-      await interaction.editReply({
-        embeds: [
-          this.container.utilities.embed
-            .SUCCESS_COLOR(
-              new EmbedBuilder({
-                title: "All done!",
-                description: `Message sent to ${member.user}!`
-              })
-            )
-            .toJSON()
-        ]
-      });
-    } catch (e: any) {
-      if (e.code === 50007) {
-        return await interaction.editReply({
-          embeds: [
-            this.container.utilities.embed
-              .ERROR_COLOR(
-                new EmbedBuilder({
-                  description: `${member.user} have their DM closed!`
-                })
-              )
-              .toJSON()
-          ]
-        });
-      } else {
-        this.container.logger.error(e);
-      }
-    }
+    const modal = this.container.utilities.modal.createMessageModal(
+      (await member.createDM()).id,
+      undefined,
+      `${interaction.user} has deemed your pfp or banner to be against our NSFW policy, you have 10 minutes to change it or to contact ${interaction.user} to resolve the issue.`
+    );
+    interaction.showModal(modal);
   }
 
   public async chatInputWarn(interaction: Subcommand.ChatInputCommandInteraction) {
-    await interaction.deferReply();
-
     const member = interaction.options.getMember("member")! as GuildMember;
     const reason = interaction.options.getString("reason", true);
 
-    try {
-      await member.user.send({
-        embeds: [
-          this.container.utilities.embed
-            .ERROR_COLOR(
-              new EmbedBuilder({
-                title: "Hey!",
-                description: `${interaction.user} has warned you for "${reason}". Contact them if you have questions or concerns regarding the warn`
-              })
-            )
-            .toJSON()
-        ]
-      });
-
-      await interaction.editReply({
-        embeds: [
-          this.container.utilities.embed
-            .SUCCESS_COLOR(
-              new EmbedBuilder({
-                title: "All done!",
-                description: `Message sent to ${member.user}!`
-              })
-            )
-            .toJSON()
-        ]
-      });
-    } catch (e: any) {
-      if (e.code === 50007) {
-        return await interaction.editReply({
-          embeds: [
-            this.container.utilities.embed
-              .ERROR_COLOR(
-                new EmbedBuilder({
-                  description: `${member.user} have their DM closed!`
-                })
-              )
-              .toJSON()
-          ]
-        });
-      } else {
-        this.container.logger.error(e);
-      }
-    }
+    const modal = this.container.utilities.modal.createMessageModal(
+      (await member.createDM()).id,
+      undefined,
+      `${interaction.user} has warned you for "${reason}". Contact them if you have questions or concerns regarding the warn`
+    );
+    interaction.showModal(modal);
   }
 
   public async chatInputCustom(interaction: Subcommand.ChatInputCommandInteraction) {
@@ -159,47 +78,7 @@ export class CommandHandler extends Subcommand {
     const member = interaction.options.getMember("member")! as GuildMember;
     const message = interaction.options.getString("message", true);
 
-    try {
-      await member.user.send({
-        embeds: [
-          this.container.utilities.embed
-            .ERROR_COLOR(
-              new EmbedBuilder({
-                description: message
-              })
-            )
-            .toJSON()
-        ]
-      });
-
-      await interaction.editReply({
-        embeds: [
-          this.container.utilities.embed
-            .SUCCESS_COLOR(
-              new EmbedBuilder({
-                title: "All done!",
-                description: `Message sent to ${member.user}!`
-              })
-            )
-            .toJSON()
-        ]
-      });
-    } catch (e: any) {
-      if (e.code === 50007) {
-        return await interaction.editReply({
-          embeds: [
-            this.container.utilities.embed
-              .ERROR_COLOR(
-                new EmbedBuilder({
-                  description: `${member.user} have their DM closed!`
-                })
-              )
-              .toJSON()
-          ]
-        });
-      } else {
-        this.container.logger.error(e);
-      }
-    }
+    const modal = this.container.utilities.modal.createMessageModal((await member.createDM()).id, undefined, message);
+    interaction.showModal(modal);
   }
 }

@@ -20,21 +20,18 @@ export class Handler extends InteractionHandler {
     )
       return;
 
-    const userId = interaction.fields.getTextInputValue("userId");
+    const channelId = interaction.fields.getTextInputValue("channelId");
     const messageId = interaction.fields.getTextInputValue("messageId");
     const messageContent = interaction.fields.getTextInputValue("messageContent");
     const optionalFile = interaction.fields.getUploadedFiles("optionalFile");
 
+    if (!channelId) return interaction.editReply("Please supply channelId!");
+
     if (!messageContent && optionalFile?.size === 0)
       return interaction.editReply("Either a message or file is needed!");
 
-    const user = await this.container.client.users.fetch(userId).catch(() => undefined);
-
-    if (!user) return interaction.editReply("Can't find that user!");
-
-    const channel = await user.createDM(true).catch(() => undefined);
-
-    if (!channel) return interaction.editReply("No DM history with that user!");
+    const channel = await this.container.client.channels.fetch(channelId);
+    if (!channel || !channel.isSendable()) return interaction.editReply("Can't find that channel!");
 
     const message = messageId ? await channel.messages.fetch(messageId).catch(() => undefined) : undefined;
 
@@ -50,12 +47,12 @@ export class Handler extends InteractionHandler {
           this.container.logger.error(err);
         });
     else
-      user
+      channel
         .send({
           content: messageContent,
           files: Array.from(optionalFile?.values() ?? [])
         })
-        .then(() => interaction.editReply("Reply sent!"))
+        .then(() => interaction.editReply("Message sent!"))
         .catch((err) => {
           interaction.editReply("Unable to send message");
           this.container.logger.error(err);
@@ -78,30 +75,31 @@ export class Handler extends InteractionHandler {
       });
 
     try {
-      await interaction.message?.reply({
-        files: Array.from(optionalFile?.values() ?? []),
-        embeds: [
-          {
-            author: {
-              name: interaction.user.username,
-              icon_url:
-                interaction.user.avatarURL({
-                  size: 4096
-                }) ?? interaction.user.defaultAvatarURL
-            },
-            description: messageContent || "(No content)",
-            footer: {
-              text: `Replied to ${user.username}`,
-              icon_url:
-                user.avatarURL({
-                  size: 4096
-                }) ?? user.defaultAvatarURL
-            },
-            color: 5793266,
-            timestamp: new Date().toISOString()
-          }
-        ]
-      });
+      if (message)
+        await interaction.message?.reply({
+          files: Array.from(optionalFile?.values() ?? []),
+          embeds: [
+            {
+              author: {
+                name: interaction.user.username,
+                icon_url:
+                  interaction.user.avatarURL({
+                    size: 4096
+                  }) ?? interaction.user.defaultAvatarURL
+              },
+              description: messageContent || "(No content)",
+              footer: {
+                text: `Replied to ${message.author.username}`,
+                icon_url:
+                  message.author.avatarURL({
+                    size: 4096
+                  }) ?? message.author.defaultAvatarURL
+              },
+              color: 5793266,
+              timestamp: new Date().toISOString()
+            }
+          ]
+        });
     } catch (e) {
       this.container.logger.error(e);
     }
