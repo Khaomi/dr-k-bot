@@ -84,7 +84,7 @@ export class ModalUtility extends Utility {
       .setStyle(TextInputStyle.Paragraph)
       .setRequired(false);
 
-    if (messageContent) channelIdInput.setValue(messageContent ?? "");
+    if (messageContent) messageContentInput.setValue(messageContent ?? "");
 
     const optionalFileInput = new FileUploadBuilder().setCustomId("optionalFile").setRequired(false);
 
