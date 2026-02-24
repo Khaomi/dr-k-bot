@@ -139,12 +139,12 @@ export class GuildUtility extends Utility {
     return member.roles.cache.has(config.role.seniorSecurity);
   }
 
-  public isIntern(member: GuildMember): boolean {
-    return member.roles.cache.has(config.role.intern);
-  }
-
   public isSecurity(member: GuildMember): boolean {
     return member.roles.cache.has(config.role.security);
+  }
+
+  public isIntern(member: GuildMember): boolean {
+    return member.roles.cache.has(config.role.intern);
   }
 }
 

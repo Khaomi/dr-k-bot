@@ -7,7 +7,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 })
 export class Handler extends InteractionHandler {
   public async run(interaction: ModalSubmitInteraction) {
-    if (!interaction.inCachedGuild() || !this.container.utilities.guild.isSecurity(interaction.member)) return;
+    if (!interaction.inCachedGuild() || !this.container.utilities.guild.isIntern(interaction.member)) return;
 
     await interaction.deferReply({
       flags: MessageFlags.Ephemeral
