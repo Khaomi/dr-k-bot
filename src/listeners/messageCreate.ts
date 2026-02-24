@@ -17,17 +17,15 @@ function buildFiles(message: Message) {
 
 function buildEmbeds(message: Message): (JSONEncodable<APIEmbed> | APIEmbed)[] {
   return [
-    message.content
-      ? {
-          author: {
-            name: message.author.username,
-            icon_url: message.author.avatarURL({ size: 4096 }) ?? message.author.defaultAvatarURL
-          },
-          description: message.content,
-          color: 5793266,
-          timestamp: new Date().toISOString()
-        }
-      : undefined,
+    {
+      author: {
+        name: message.author.username,
+        icon_url: message.author.avatarURL({ size: 4096 }) ?? message.author.defaultAvatarURL
+      },
+      description: message.content ?? "(No content)",
+      color: 5793266,
+      timestamp: new Date().toISOString()
+    },
     ...message.embeds
   ].filter((x) => x !== undefined);
 }
