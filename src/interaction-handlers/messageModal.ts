@@ -7,6 +7,10 @@ import { ApplyOptions } from "@sapphire/decorators";
 })
 export class Handler extends InteractionHandler {
   public async run(interaction: ModalSubmitInteraction) {
+    await interaction.deferReply({
+      flags: MessageFlags.Ephemeral
+    });
+
     if (
       !interaction.inCachedGuild() ||
       (!this.container.utilities.guild.isHeadSecurity(interaction.member) &&
@@ -15,10 +19,6 @@ export class Handler extends InteractionHandler {
         !this.container.utilities.guild.isIntern(interaction.member))
     )
       return;
-
-    await interaction.deferReply({
-      flags: MessageFlags.Ephemeral
-    });
 
     const userId = interaction.fields.getTextInputValue("userId");
     const messageId = interaction.fields.getTextInputValue("messageId");
@@ -108,7 +108,7 @@ export class Handler extends InteractionHandler {
   }
 
   public parse(interaction: ModalSubmitInteraction) {
-    if (interaction.customId !== "replyModal") return this.none();
+    if (interaction.customId !== "messageModal") return this.none();
     return this.some();
   }
 }

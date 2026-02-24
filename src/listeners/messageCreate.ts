@@ -1,3 +1,7 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Listener } from "@sapphire/framework";
+import path from "node:path";
+import fs from "node:fs";
 import {
   APIEmbed,
   AttachmentBuilder,
@@ -6,10 +10,6 @@ import {
   MessageType,
   type Message
 } from "discord.js";
-import { ApplyOptions } from "@sapphire/decorators";
-import { Listener } from "@sapphire/framework";
-import path from "node:path";
-import fs from "node:fs";
 
 const insultList = JSON.parse(fs.readFileSync(path.join(__dirname, "../../insult.json"), "utf8")) as string[];
 
@@ -48,7 +48,7 @@ function buildMessageOptions(message: Message, withComponent: boolean = true): M
             components: [
               {
                 type: 2,
-                customId: `reply_${message.author.id}_${message.id}`,
+                customId: `message_${message.author.id}_${message.id}`,
                 label: "Reply",
                 style: 1
               }

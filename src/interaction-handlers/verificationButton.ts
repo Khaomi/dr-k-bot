@@ -57,18 +57,15 @@ export class Handler extends InteractionHandler {
   public async run(interaction: ButtonInteraction) {
     await interaction.deferReply();
 
-    let moderator: GuildMember | void;
     let verificationMessage: Message | void;
 
-    moderator = await this.container.utilities.guild.getGuildMember(interaction.user.id);
-    if (!moderator) throw new Error("This wasn't suppose to happened");
-
     if (
-      !this.container.utilities.guild.isHeadSecurity(moderator) &&
-      !this.container.utilities.guild.isSeniorSecurity(moderator) &&
-      !this.container.utilities.guild.isSecurity(moderator) &&
-      !this.container.utilities.guild.isIntern(moderator)
-    ) {
+      !interaction.inCachedGuild() ||
+      (!this.container.utilities.guild.isHeadSecurity(interaction.member) &&
+        !this.container.utilities.guild.isSeniorSecurity(interaction.member) &&
+        !this.container.utilities.guild.isSecurity(interaction.member) &&
+        !this.container.utilities.guild.isIntern(interaction.member))
+    )
       return interaction.editReply({
         embeds: [
           this.container.utilities.embed
@@ -76,7 +73,6 @@ export class Handler extends InteractionHandler {
             .toJSON()
         ]
       });
-    }
 
     const ticket = await this.container.utilities.ticket.getByMessageId(interaction.message.id);
 
@@ -111,7 +107,7 @@ export class Handler extends InteractionHandler {
 
         await this.container.utilities.verification.deleteTicket(ticket.id, {
           deleteType: "ACCEPTED",
-          who: moderator.user
+          who: interaction.user
         });
 
         await interaction.editReply({
@@ -216,7 +212,7 @@ export class Handler extends InteractionHandler {
                   .ERROR_COLOR(
                     new EmbedBuilder({
                       title: "Sorry!",
-                      description: `Your verification request has been declined by ${moderator}\nReason: ${
+                      description: `Your verification request has been declined by ${interaction.member}\nReason: ${
                         (await this.container.utilities.message.transformMessage(reason)).text
                       }`
                     })
@@ -229,7 +225,7 @@ export class Handler extends InteractionHandler {
 
         await this.container.utilities.verification.deleteTicket(ticket.id, {
           deleteType: "DECLINED",
-          who: moderator.user
+          who: interaction.user
         });
 
         await reason.reply({
@@ -240,7 +236,7 @@ export class Handler extends InteractionHandler {
                   new EmbedBuilder({
                     description: `${user ?? "User"} has been declined!`
                   }).setFooter({ text: ticket.id }),
-                  moderator.user
+                  interaction.user
                 )
               )
               .toJSON()
@@ -267,7 +263,7 @@ export class Handler extends InteractionHandler {
           });
         }
 
-        await this.container.utilities.guild.openThread(moderator, member);
+        await this.container.utilities.guild.openThread(interaction.member, member);
 
         await interaction.editReply({
           embeds: [
@@ -277,7 +273,7 @@ export class Handler extends InteractionHandler {
                   new EmbedBuilder({
                     description: `Thread opened with ${member}!`
                   }),
-                  moderator.user
+                  interaction.user
                 )
               )
               .setFooter({ text: ticket.id })

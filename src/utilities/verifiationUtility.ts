@@ -113,7 +113,7 @@ export class VerificationUtility extends Utility {
 
               new ButtonBuilder()
                 .setLabel("Reply")
-                .setCustomId(`reply_${data.discordId}`)
+                .setCustomId(`message_${data.discordId}`)
                 .setStyle(ButtonStyle.Primary),
 
               new ButtonBuilder().setLabel("Ticket").setCustomId("verify_ticket").setStyle(ButtonStyle.Secondary)

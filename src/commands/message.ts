@@ -10,7 +10,7 @@ import {
 } from "discord.js";
 
 @ApplyOptions<Command.Options>({
-  description: "Open the reply prompt",
+  description: "Open the message prompt",
   preconditions: [["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly"]]
 })
 export class CommandHandler extends Command {
@@ -27,7 +27,7 @@ export class CommandHandler extends Command {
   }
 
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const modal = new ModalBuilder().setCustomId("replyModal").setTitle("Reply to user");
+    const modal = new ModalBuilder().setCustomId("messageModal").setTitle("Message to user");
 
     const userIdInput = new TextInputBuilder().setCustomId("userId").setStyle(TextInputStyle.Short).setRequired(true);
 

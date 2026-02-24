@@ -15,9 +15,20 @@ import {
 })
 export class Handler extends InteractionHandler {
   public async run(interaction: ButtonInteraction) {
-    const [userId, messageId] = interaction.customId.replace("reply_", "").split("_");
+    if (
+      !interaction.inCachedGuild() ||
+      (!this.container.utilities.guild.isHeadSecurity(interaction.member) &&
+        !this.container.utilities.guild.isSeniorSecurity(interaction.member) &&
+        !this.container.utilities.guild.isSecurity(interaction.member) &&
+        !this.container.utilities.guild.isIntern(interaction.member))
+    )
+      return;
 
-    const modal = new ModalBuilder().setCustomId("replyModal").setTitle("Reply to user");
+    await interaction.deferReply();
+
+    const [userId, messageId] = interaction.customId.replace("message_", "").split("_");
+
+    const modal = new ModalBuilder().setCustomId("messageModal").setTitle("Message to user");
 
     const userIdInput = new TextInputBuilder().setCustomId("userId").setStyle(TextInputStyle.Short).setRequired(true);
 
@@ -39,24 +50,23 @@ export class Handler extends InteractionHandler {
 
     const userIdLabel = new LabelBuilder()
       .setLabel("User ID")
-      .setDescription("The ID of the user to reply to")
+      .setDescription("The ID of the user to message")
       .setTextInputComponent(userIdInput);
 
     const messageIdLabel = new LabelBuilder()
       .setLabel("Message ID (Optional)")
-      .setDescription("The ID of the message to reply to")
+      .setDescription("If provided, will try to reply to that message")
       .setTextInputComponent(messageIdInput);
 
     const messageReplyLabel = new TextDisplayBuilder().setContent("Choose one or both of the below");
 
     const messageContentLabel = new LabelBuilder()
-      .setLabel("The content of the message to reply")
-      .setDescription("The content of the message")
+      .setLabel("The content of the message")
       .setTextInputComponent(messageContentInput);
 
     const fileInputLabel = new LabelBuilder()
       .setLabel("File to attach")
-      .setDescription("If you want to attach any file, put it here")
+      .setDescription("File that you gonna attach to the message")
       .setFileUploadComponent(optionalFileInput);
 
     modal
@@ -68,7 +78,7 @@ export class Handler extends InteractionHandler {
   }
 
   public parse(interaction: ButtonInteraction) {
-    if (!interaction.customId.startsWith("reply")) return this.none();
+    if (!interaction.customId.startsWith("message")) return this.none();
     return this.some();
   }
 }
