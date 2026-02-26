@@ -5,7 +5,10 @@ import config from "../config";
 
 @ApplyOptions<Command.Options>({
   description: "Open a thread to ask for additional information",
-  preconditions: ["ChangedGuildOnly", ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly"]]
+  preconditions: [
+    "ChangedGuildOnly",
+    ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly", "BotOwnerOnly"]
+  ]
 })
 export class CommandHandler extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {

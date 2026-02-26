@@ -4,7 +4,10 @@ import { Command } from "@sapphire/framework";
 
 @ApplyOptions<Command.Options>({
   description: "Replies with the verification button in current channel",
-  preconditions: ["ChangedGuildOnly", ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly"]]
+  preconditions: [
+    "ChangedGuildOnly",
+    ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly", "BotOwnerOnly"]
+  ]
 })
 export class CommandHandler extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {

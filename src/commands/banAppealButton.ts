@@ -1,10 +1,11 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } from "discord.js";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Command } from "@sapphire/framework";
+import config from "../config";
 
 @ApplyOptions<Command.Options>({
   description: "Replies with the appeal button in current channel",
-  preconditions: ["ChangedGuildOnly", ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly"]]
+  preconditions: [["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly"]]
 })
 export class CommandHandler extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {

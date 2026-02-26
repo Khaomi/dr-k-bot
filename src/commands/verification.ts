@@ -43,7 +43,10 @@ ${ticket.answers.map((answer) => `${answer.question}: ${answer.answer}`).join("\
 
 @ApplyOptions<Subcommand.Options>({
   description: "Verification ticket management",
-  preconditions: ["ChangedGuildOnly", ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly"]],
+  preconditions: [
+    "ChangedGuildOnly",
+    ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly", "BotOwnerOnly"]
+  ],
   subcommands: [
     { name: "accept", chatInputRun: "chatInputAccept" },
     { name: "decline", chatInputRun: "chatInputDecline" },

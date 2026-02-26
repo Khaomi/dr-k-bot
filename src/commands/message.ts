@@ -3,7 +3,7 @@ import { Command } from "@sapphire/framework";
 
 @ApplyOptions<Command.Options>({
   description: "Open the message prompt",
-  preconditions: [["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly"]]
+  preconditions: [["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly", "BotOwnerOnly"]]
 })
 export class CommandHandler extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {

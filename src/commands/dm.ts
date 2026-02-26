@@ -8,7 +8,10 @@ const memberOption = (option: any, description = "-") =>
 
 @ApplyOptions<Subcommand.Options>({
   description: "Send a message in the member's dm",
-  preconditions: ["ChangedGuildOnly", ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly"]],
+  preconditions: [
+    "ChangedGuildOnly",
+    ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly", "BotOwnerOnly"]
+  ],
   subcommands: [
     { name: "nsfw", chatInputRun: "chatInputNsfw" },
     { name: "warn", chatInputRun: "chatInputWarn" },
