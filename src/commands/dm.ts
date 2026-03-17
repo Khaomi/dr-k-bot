@@ -13,9 +13,9 @@ const memberOption = (option: any, description = "-") =>
     ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly", "BotOwnerOnly"]
   ],
   subcommands: [
-    { name: "nsfw", chatInputRun: "chatInputNsfw" },
-    { name: "warn", chatInputRun: "chatInputWarn" },
-    { name: "custom", chatInputRun: "chatInputCustom" }
+    { name: "nsfw", chatInputRun: "nsfwCommand" },
+    { name: "warn", chatInputRun: "warnCommand" },
+    { name: "custom", chatInputRun: "customCommand" }
   ]
 })
 export class CommandHandler extends Subcommand {
@@ -53,7 +53,7 @@ export class CommandHandler extends Subcommand {
     );
   }
 
-  public async chatInputNsfw(interaction: Subcommand.ChatInputCommandInteraction) {
+  public async nsfwCommand(interaction: Subcommand.ChatInputCommandInteraction) {
     const member = interaction.options.getMember("member")! as GuildMember;
     const modal = this.container.utilities.modal.createMessageModal(
       (await member.createDM()).id,
@@ -63,7 +63,7 @@ export class CommandHandler extends Subcommand {
     interaction.showModal(modal);
   }
 
-  public async chatInputWarn(interaction: Subcommand.ChatInputCommandInteraction) {
+  public async warnCommand(interaction: Subcommand.ChatInputCommandInteraction) {
     const member = interaction.options.getMember("member")! as GuildMember;
     const reason = interaction.options.getString("reason", true);
 
@@ -75,9 +75,7 @@ export class CommandHandler extends Subcommand {
     interaction.showModal(modal);
   }
 
-  public async chatInputCustom(interaction: Subcommand.ChatInputCommandInteraction) {
-    await interaction.deferReply();
-
+  public async customCommand(interaction: Subcommand.ChatInputCommandInteraction) {
     const member = interaction.options.getMember("member")! as GuildMember;
     const message = interaction.options.getString("message", true);
 
