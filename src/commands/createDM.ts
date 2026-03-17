@@ -23,13 +23,13 @@ export class CreateDMCommand extends Command {
   }
 
   public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    const user = interaction.options.getUser("user");
+    const user = interaction.options.getUser("user", true);
 
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     await interaction.editReply(
       (await user
-        ?.createDM()
-        ?.then((x) => x.id)
+        .createDM()
+        .then((x) => x.id)
         .catch(() => undefined)) ?? "Unable to create DM!"
     );
   }
