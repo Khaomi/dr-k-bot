@@ -6,7 +6,7 @@ import config from "../config";
 @ApplyOptions<InteractionHandler.Options>({
   interactionHandlerType: InteractionHandlerTypes.ModalSubmit
 })
-export class Handler extends InteractionHandler {
+export class VerificationModalHandler extends InteractionHandler {
   public async run(interaction: ModalSubmitInteraction) {
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 

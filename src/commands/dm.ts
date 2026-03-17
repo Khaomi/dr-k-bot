@@ -18,7 +18,7 @@ const memberOption = (option: any, description = "-") =>
     { name: "custom", chatInputRun: "customCommand" }
   ]
 })
-export class CommandHandler extends Subcommand {
+export class DMCommand extends Subcommand {
   public override registerApplicationCommands(registry: Subcommand.Registry) {
     registry.registerChatInputCommand(
       (builder) =>

@@ -10,7 +10,7 @@ import config from "../config";
     ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly", "BotOwnerOnly"]
   ]
 })
-export class CommandHandler extends Command {
+export class WelcomeCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand(
       (builder) =>

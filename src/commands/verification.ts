@@ -54,7 +54,7 @@ ${ticket.answers.map((answer) => `${answer.question}: ${answer.answer}`).join("\
     { name: "list", chatInputRun: "chatInputList" }
   ]
 })
-export class CommandHandler extends Subcommand {
+export class VerificationCommand extends Subcommand {
   public override registerApplicationCommands(registry: Subcommand.Registry) {
     registry.registerChatInputCommand(
       (builder) =>

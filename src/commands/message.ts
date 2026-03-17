@@ -5,7 +5,7 @@ import { Command } from "@sapphire/framework";
   description: "Open the message prompt",
   preconditions: [["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly", "BotOwnerOnly"]]
 })
-export class CommandHandler extends Command {
+export class MessageCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand(
       (builder) =>

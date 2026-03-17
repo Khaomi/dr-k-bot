@@ -17,7 +17,7 @@ const clean = async (text: any): Promise<string> => {
   description: "Evaluate code",
   preconditions: ["BotOwnerOnly"]
 })
-export class CommandHandler extends Command {
+export class EvalCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand(
       (builder) =>

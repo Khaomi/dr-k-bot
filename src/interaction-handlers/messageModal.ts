@@ -5,7 +5,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 @ApplyOptions<InteractionHandler.Options>({
   interactionHandlerType: InteractionHandlerTypes.ModalSubmit
 })
-export class Handler extends InteractionHandler {
+export class MessageModalHandler extends InteractionHandler {
   public async run(interaction: ModalSubmitInteraction) {
     await interaction.deferReply({
       flags: MessageFlags.Ephemeral

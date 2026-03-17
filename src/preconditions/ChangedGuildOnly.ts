@@ -2,7 +2,7 @@ import { type CommandInteraction, type ContextMenuCommandInteraction, type Messa
 import { AllFlowsPrecondition } from "@sapphire/framework";
 import config from "../config";
 
-export class UserPrecondition extends AllFlowsPrecondition {
+export class ChangedGuildOnlyPrecondition extends AllFlowsPrecondition {
   public override async messageRun(message: Message) {
     return this.checkGuild(message.guildId ?? "");
   }

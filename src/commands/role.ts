@@ -7,7 +7,7 @@ import config from "../config";
   description: "Toggle role of a member",
   preconditions: ["ChangedGuildOnly", ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly"]]
 })
-export class CommandHandler extends Command {
+export class RoleCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand(
       (builder) =>

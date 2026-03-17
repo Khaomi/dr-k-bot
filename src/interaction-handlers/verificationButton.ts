@@ -4,7 +4,6 @@ import config from "../config";
 import {
   type ButtonInteraction,
   type CollectorFilter,
-  type GuildMember,
   type Message,
   type MessageMentionOptions,
   type MessageCreateOptions,
@@ -53,7 +52,7 @@ async function handleQuestion(
 @ApplyOptions<InteractionHandler.Options>({
   interactionHandlerType: InteractionHandlerTypes.Button
 })
-export class Handler extends InteractionHandler {
+export class VerificationButtonHandler extends InteractionHandler {
   public async run(interaction: ButtonInteraction) {
     await interaction.deferReply();
 

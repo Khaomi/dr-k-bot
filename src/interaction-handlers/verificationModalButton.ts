@@ -5,7 +5,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 @ApplyOptions<InteractionHandler.Options>({
   interactionHandlerType: InteractionHandlerTypes.Button
 })
-export class Handler extends InteractionHandler {
+export class VerificationModalButtonHandler extends InteractionHandler {
   public async run(interaction: ButtonInteraction) {
     const hasTicket = await this.container.utilities.ticket.hasUser(interaction.user.id);
 

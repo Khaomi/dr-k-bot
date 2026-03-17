@@ -1,7 +1,7 @@
 import { type CommandInteraction, type ContextMenuCommandInteraction, type Message } from "discord.js";
 import { AllFlowsPrecondition } from "@sapphire/framework";
 
-export class UserPrecondition extends AllFlowsPrecondition {
+export class SeniorSecurityPrecondition extends AllFlowsPrecondition {
   public override async messageRun(message: Message) {
     return this.checkUser(message.author.id);
   }

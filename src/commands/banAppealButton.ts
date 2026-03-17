@@ -7,7 +7,7 @@ import config from "../config";
   description: "Replies with the appeal button in current channel",
   preconditions: [["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly"]]
 })
-export class CommandHandler extends Command {
+export class BanAppealButtonCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand(
       (builder) =>

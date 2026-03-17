@@ -5,7 +5,7 @@ import { MessageFlags } from "discord.js";
 @ApplyOptions<Command.Options>({
   description: "Give you the link to the bot's source code"
 })
-export class CommandHandler extends Command {
+export class SourceCodeCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand(
       (builder) =>

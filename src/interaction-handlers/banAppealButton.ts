@@ -5,7 +5,7 @@ import { type ButtonInteraction } from "discord.js";
 @ApplyOptions<InteractionHandler.Options>({
   interactionHandlerType: InteractionHandlerTypes.Button
 })
-export class Handler extends InteractionHandler {
+export class BanAppealButtonHandler extends InteractionHandler {
   public async run(interaction: ButtonInteraction) {
     await interaction.showModal(this.container.utilities.modal.createBanAppealModal());
   }

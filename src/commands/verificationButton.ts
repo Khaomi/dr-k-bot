@@ -9,7 +9,7 @@ import { Command } from "@sapphire/framework";
     ["HeadSecurityOnly", "SeniorSecurityOnly", "SecurityOnly", "InternOnly", "BotOwnerOnly"]
   ]
 })
-export class CommandHandler extends Command {
+export class VerificationButtonCommand extends Command {
   public override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand(
       (builder) =>
