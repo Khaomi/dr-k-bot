@@ -1,4 +1,4 @@
-import { PrismaClient, VerificationTicket as VerificationTicketType } from "./generated/prisma/client";
+import { PrismaClient, type VerificationTicket as VerificationTicketType } from "./generated/prisma/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { container } from "@sapphire/framework";
 
@@ -20,4 +20,4 @@ prisma.$on("query", (event) => {
 });
 
 export const VerificationTicket = prisma.verificationTicket;
-export { VerificationTicketType };
+export type { VerificationTicketType };
