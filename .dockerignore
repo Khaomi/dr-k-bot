@@ -1,0 +1,16 @@
+node_modules/
+.vscode/
+dist/
+
+config.example.json
+insult.example.json
+.sapphirerc.json
+.example.env
+.prettierrc
+config.json
+insult.json
+.gitignore
+README.md
+LICENSE
+dev.dev
+.env
