@@ -7,4 +7,4 @@ docker run -d \
   -v $(pwd)/database.sqlite3:/app/database.sqlite3 \
   --restart unless-stopped \
   --name dr-k-bot \
-  dr-k-bot
+  ./Dockerfile
