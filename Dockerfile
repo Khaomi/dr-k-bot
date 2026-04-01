@@ -19,6 +19,7 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
 ENV NODE_ENV=production
+ENV LOCAL_DATABASE_URL="file:./dev.db"
 
 RUN bun run build
 
