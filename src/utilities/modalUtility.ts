@@ -43,12 +43,12 @@ export class ModalUtility extends Utility {
     config.appealQuestions.forEach((question, index) => {
       const input = new TextInputBuilder()
         .setRequired(question.required)
-        .setValue(question.value ?? "")
-        .setPlaceholder(question.placeholder ?? "")
         .setStyle(question.style)
         .setCustomId(`question-${index + 1}`);
 
       if (question.value) input.setValue(question.value);
+
+      if (question.placeholder) input.setValue(question.placeholder);
 
       if (question.minLength) input.setMinLength(question.minLength);
 
