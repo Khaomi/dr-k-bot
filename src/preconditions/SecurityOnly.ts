@@ -16,7 +16,7 @@ export class SecurityOnlyPrecondition extends AllFlowsPrecondition {
 
   private async checkUser(id: string) {
     const guildMember = await this.container.utilities.guild.getGuildMember(id);
-    return guildMember && this.container.utilities.guild.isIntern(guildMember) ? this.ok() : this.error();
+    return guildMember && this.container.utilities.guild.isSecurity(guildMember) ? this.ok() : this.error();
   }
 }
 
